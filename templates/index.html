@@ -3,81 +3,81 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Home - Login & Signup</title>
+    <title>FixMate - Services</title>
 
+    <!-- React and Babel CDNs -->
     <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
+    <!-- Link your style.css -->
     <link rel="stylesheet" href="../static/style.css">
-    <style>
-        .plumber-service-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 15px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            margin-bottom: 10px;
-            background-color: var(--card-bg);
-        }
-        .plumber-service-item button {
-            background: var(--primary-color);
-            color: white;
-            border: none;
-            padding: 10px 15px;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-        .plumber-service-item button:hover {
-            background: var(--primary-hover-color);
-        }
-        .back-button {
-            margin-bottom: 20px;
-            cursor: pointer;
-            font-weight: bold;
-        }
-    </style>
 </head>
 <body>
 
+    <!-- This div MUST exist for React to work -->
     <div id="root"></div>
 
     <script type="text/babel">
     {% raw %}
         const { useState, useEffect } = React;
 
-        // --- AUTH COMPONENT (Login/Signup Form) ---
+        // --- SUB-COMPONENT: AUTH PAGE ---
         function AuthPage({ onGoBack }) {
-            // ... (omitted for brevity, no changes here)
-        }
-
-        // --- PLUMBER PAGE COMPONENT ---
-        function PlumberPage({ onGoBack, addToCart }) {
-            const plumberServices = [
-                { id: 'p1', name: 'Basic Tap Repair', price: 5 },
-                { id: 'p2', name: 'Drain & Pipe Cleaning', price: 15 },
-                { id: 'p3', name: 'Toilet Installation', price: 30 },
-                { id: 'p4', name: 'Geyser/Water Heater Repair', price: 25 },
-            ];
-
             return (
                 <main className="container">
-                    <p className="back-button" onClick={onGoBack}>← Back to All Services</p>
-                    <h2>Plumbing Services</h2>
-                    <p>Choose from the best plumbing services in town.</p>
-                    <br />
-                    <div>
-                        {plumberServices.map(service => (
-                            <div key={service.id} className="plumber-service-item">
-                                <div>
-                                    <h4>{service.name}</h4>
-                                    <p>${service.price}</p>
-                                </div>
-                                <button onClick={() => addToCart(service)}>Add to Cart</button>
+                    <div style={{textAlign: 'center', padding: '50px'}}>
+                        <h2>Login / Sign Up</h2>
+                        <button className="add-to-cart-button" style={{width: '200px'}} onClick={onGoBack}>Back to Home</button>
+                    </div>
+                </main>
+            );
+        }
+
+        // --- SUB-COMPONENT: PLUMBER PAGE ---
+        function PlumberPage({ onGoBack, addToCart, cart }) {
+            const plumberServices = [
+    // Bath fittings category
+    { id: 'p1', category: 'Bath fittings', name: 'Bath accessory installation', price: 69, duration: '30 mins', rating: 4.74, reviews: '11K', description: 'Small fittings such as towel hanger/shelves, soap dispenser, etc.', image: 'https://images.unsplash.com/photo-1584622650111-993a426fbf0a?q=80&w=400' },
+    { id: 'p2', category: 'Bath fittings', name: 'Shower installation', price: 89, duration: '45 mins', rating: 4.82, reviews: '14K', description: 'Applicable for wall-mounted & handheld shower.', image: 'https://images.unsplash.com/photo-1620629761511-fb099b416cdd?q=80&w=400' },
+
+    // Basin & sink category
+    { id: 'p3', category: 'Basin & sink', name: 'Sink drainage removal', price: 119, duration: '20 mins', rating: 4.6, reviews: '5K', description: 'Removal of old/damaged sink coupling and waste pipe.', image: 'https://images.unsplash.com/photo-1595515106969-1ce29566ff1c?q=80&w=400' },
+    { id: 'p4', category: 'Basin & sink', name: 'Basin installation', price: 249, duration: '60 mins', rating: 4.5, reviews: '8K', description: 'Installation of wash basin and connection to drainage.', image: 'https://images.unsplash.com/photo-1521207418485-99c705420785?q=80&w=400' },
+
+    // Toilet category
+    { id: 'p5', category: 'Toilet', name: 'Toilet seat replacement', price: 150, duration: '30 mins', rating: 4.9, reviews: '20K', description: 'Installation of new toilet seat cover.', image: 'https://images.unsplash.com/photo-1585704032915-c3400ca1f963?q=80&w=400' },
+];
+
+const sidebarIcons = [
+    { name: 'Bath fittings', icon: '🚿' },
+    { name: 'Basin & sink', icon: '🚰' },
+    { name: 'Grouting', icon: '🧱' },
+    { name: 'Water filter', icon: '💧' },
+    { name: 'Drainage', icon: '🛀' },
+    { name: 'Toilet', icon: '🚽' },
+    { name: 'Tap & mixer', icon: '🛠️' }
+];
+            return (
+                <main className="plumber-page-grid">
+                    <div className="plumber-services-list">
+                        <p style={{cursor:'pointer', color:'#673ab7', fontWeight:'bold'}} onClick={onGoBack}>← Back</p>
+                        <h3>Plumbing Services</h3>
+                        {plumberServices.map(s => (
+                            <div key={s.id} className={`plumber-service-list-item ${selectedService.id === s.id ? 'selected' : ''}`} onClick={() => setSelectedService(s)}>
+                                {s.name}
                             </div>
                         ))}
+                    </div>
+                    <div className="plumber-service-details">
+                        <img src={selectedService.image} style={{width:'100%', borderRadius:'8px'}} />
+                        <h3>{selectedService.name}</h3>
+                        <p>Price: ${selectedService.price} | Rating: {selectedService.rating}⭐</p>
+                        <button className="add-to-cart-button" onClick={() => addToCart(selectedService)}>Add to Cart</button>
+                    </div>
+                    <div className="plumber-cart-summary">
+                        <h3>Cart ({cart.length})</h3>
+                        {cart.length === 0 ? <p>No items</p> : cart.map((item, i) => <div key={i}>{item.name}</div>)}
                     </div>
                 </main>
             );
@@ -85,103 +85,77 @@
 
         // --- MAIN APP COMPONENT ---
         function App() {
-            const [view, setView] = useState('home'); // 'home', 'auth', 'plumber'
+            const [view, setView] = useState('home');
             const [theme, setTheme] = useState('light');
             const [cart, setCart] = useState([]);
 
-            useEffect(() => {
-                const savedTheme = localStorage.getItem('theme') || 'light';
-                setTheme(savedTheme);
-            }, []);
-
-            useEffect(() => {
-                if (theme === 'dark') {
-                    document.body.classList.add('dark-mode');
-                } else {
-                    document.body.classList.remove('dark-mode');
-                }
-                localStorage.setItem('theme', theme);
-            }, [theme]);
-
-            const toggleTheme = () => {
-                setTheme(prevTheme => (prevTheme === 'light' ? 'dark' : 'light'));
-            };
-
-            const addToCart = (service) => {
-                setCart(prevCart => [...prevCart, service]);
-                alert(`${service.name} has been added to your cart!`);
-                console.log("Current Cart:", [...cart, service]);
-            };
-
-            const handleServiceClick = (serviceTag) => {
-                if (serviceTag === 'plumber') {
-                    setView('plumber');
-                } else {
-                    alert('This service page is not yet available.');
-                }
-            };
-
-            const services = [
-                { id: 1, name: "Women's Salon", icon: "💄", tag: "salon" },
-                { id: 2, name: "AC Repair", icon: "❄️", tag: "ac_repair" },
-                { id: 3, name: "Cleaning", icon: "🧹", tag: "cleaning" },
-                { id: 4, name: "Plumber", icon: "🔧", tag: "plumber" },
-                { id: 5, name: "Electrician", icon: "💡", tag: "electrician" },
-                { id: 6, name: "Pest Control", icon: "🐜", tag: "pest_control" }
+            // THE 10 SERVICES LIST
+            const servicesList = [
+                { name: "Plumber", icon: "🔧", tag: "plumber" },
+                { name: "AC Repair", icon: "❄️", tag: "ac" },
+                { name: "Sweeping", icon: "🧹", tag: "sweep" },
+                { name: "Electrician", icon: "💡", tag: "elec" },
+                { name: "Carpenter", icon: "🪚", tag: "carp" },
+                { name: "Car Wash", icon: "🚗", tag: "car" },
+                { name: "Washing", icon: "🧽", tag: "wash" },
+                { name: "Cooking", icon: "🍽️", tag: "cook" },
+                { name: "Women's Salon", icon: "💄", tag: "wsalon" },
+                { name: "Men's Salon", icon: "✂️", tag: "msalon" }
             ];
 
-            const renderContent = () => {
-                switch (view) {
-                    case 'auth':
-                        return <AuthPage onGoBack={() => setView('home')} />;
-                    case 'plumber':
-                        return <PlumberPage onGoBack={() => setView('home')} addToCart={addToCart} />;
-                    case 'home':
-                    default:
-                        return (
-                            <main>
-                                <header className="hero">
-                                    <h1>Home services, on demand.</h1>
-                                    <div className="search-box">
-                                        <input type="text" placeholder="Search for services..." />
-                                        <button>Search</button>
-                                    </div>
-                                </header>
-                                <section className="container">
-                                    <h2>What are you looking for?</h2>
-                                    <div className="services-grid">
-                                        {services.map(s => (
-                                            <div key={s.id} className="card" onClick={() => handleServiceClick(s.tag)}>
-                                                <div style={{fontSize: '40px'}}>{s.icon}</div>
-                                                <div style={{fontWeight: 'bold', marginTop: '10px'}}>{s.name}</div>
-                                            </div>
-                                        ))}
-                                    </div>
-                                </section>
-                            </main>
-                        );
-                }
+            useEffect(() => {
+                if (theme === 'dark') document.body.classList.add('dark-mode');
+                else document.body.classList.remove('dark-mode');
+            }, [theme]);
+
+            const addToCart = (item) => setCart([...cart, item]);
+
+            const handleServiceClick = (tag) => {
+                if (tag === 'plumber') setView('plumber');
+                else alert(tag + " service coming soon!");
             };
 
             return (
-                <div>
+                <div className="App">
                     <nav className="navbar">
-                        <div className="logo" onClick={() => setView('home')}>Home</div>
+                        <div className="logo" onClick={() => setView('home')}>FixMate</div>
                         <ul className="nav-links">
                             <li onClick={() => setView('home')}>Home</li>
                             <li onClick={() => setView('auth')}>Login / Sign Up</li>
-                            <li>
-                                <button id="theme-toggle" onClick={toggleTheme}>
-                                    {theme === 'light' ? '🌙' : '☀️'}
-                                </button>
+                            <li onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')} style={{cursor:'pointer'}}>
+                                {theme === 'light' ? '🌙' : '☀️'}
                             </li>
                         </ul>
                     </nav>
 
-                    {renderContent()}
+                    {view === 'home' ? (
+                        <main>
+                            <header className="hero">
+                                <h1>FixMate services, on demand.</h1>
+                                <div className="search-box">
+                                    <input type="text" placeholder="Search for services..." />
+                                    <button>Search</button>
+                                </div>
+                            </header>
+                            <section className="container">
+                                <h2>Services</h2>
+                                <div className="services-grid">
+                                    {servicesList.map((s, index) => (
+                                        <div key={index} className="card" onClick={() => handleServiceClick(s.tag)}>
+                                            <span>{s.icon}</span> {s.name}
+                                        </div>
+                                    ))}
+                                </div>
+                            </section>
+                        </main>
+                    ) : view === 'auth' ? (
+                        <AuthPage onGoBack={() => setView('home')} />
+                    ) : (
+                        <PlumberPage onGoBack={() => setView('home')} addToCart={addToCart} cart={cart} />
+                    )}
 
                     <footer>
-                        <p>© 2024 Home Clone</p>
+                        <p>© 2024 FixMate Clone</p>
                     </footer>
                 </div>
             );
