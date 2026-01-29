@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home - Login & Signup</title>
+
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <link rel="stylesheet" href="../static/style.css">
+    <style>
+        .plumber-service-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            background-color: var(--card-bg);
+        }
+        .plumber-service-item button {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .plumber-service-item button:hover {
+            background: var(--primary-hover-color);
+        }
+        .back-button {
+            margin-bottom: 20px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="root"></div>
+
+    <script type="text/babel">
+    {% raw %}
+        const { useState, useEffect } = React;
+
+        // --- AUTH COMPONENT (Login/Signup Form) ---
+        function AuthPage({ onGoBack }) {
+            // ... (omitted for brevity, no changes here)
+        }
+
+        // --- PLUMBER PAGE COMPONENT ---
+        function PlumberPage({ onGoBack, addToCart }) {
+            const plumberServices = [
+                { id: 'p1', name: 'Basic Tap Repair', price: 5 },
+                { id: 'p2', name: 'Drain & Pipe Cleaning', price: 15 },
+                { id: 'p3', name: 'Toilet Installation', price: 30 },
+                { id: 'p4', name: 'Geyser/Water Heater Repair', price: 25 },
+            ];
+
+            return (
+                <main className="container">
+                    <p className="back-button" onClick={onGoBack}>← Back to All Services</p>
+                    <h2>Plumbing Services</h2>
+                    <p>Choose from the best plumbing services in town.</p>
+                    <br />
+                    <div>
+                        {plumberServices.map(service => (
+                            <div key={service.id} className="plumber-service-item">
+                                <div>
+                                    <h4>{service.name}</h4>
+                                    <p>${service.price}</p>
+                                </div>
+                                <button onClick={() => addToCart(service)}>Add to Cart</button>
+                            </div>
+                        ))}
+                    </div>
+                </main>
+            );
+        }
+
+        // --- MAIN APP COMPONENT ---
+        function App() {
+            const [view, setView] = useState('home'); // 'home', 'auth', 'plumber'
+            const [theme, setTheme] = useState('light');
+            const [cart, setCart] = useState([]);
+
+            useEffect(() => {
+                const savedTheme = localStorage.getItem('theme') || 'light';
+                setTheme(savedTheme);
+            }, []);
+
+            useEffect(() => {
+                if (theme === 'dark') {
+                    document.body.classList.add('dark-mode');
+                } else {
+                    document.body.classList.remove('dark-mode');
+                }
+                localStorage.setItem('theme', theme);
+            }, [theme]);
+
+            const toggleTheme = () => {
+                setTheme(prevTheme => (prevTheme === 'light' ? 'dark' : 'light'));
+            };
+
+            const addToCart = (service) => {
+                setCart(prevCart => [...prevCart, service]);
+                alert(`${service.name} has been added to your cart!`);
+                console.log("Current Cart:", [...cart, service]);
+            };
+
+            const handleServiceClick = (serviceTag) => {
+                if (serviceTag === 'plumber') {
+                    setView('plumber');
+                } else {
+                    alert('This service page is not yet available.');
+                }
+            };
+
+            const services = [
+                { id: 1, name: "Women's Salon", icon: "💄", tag: "salon" },
+                { id: 2, name: "AC Repair", icon: "❄️", tag: "ac_repair" },
+                { id: 3, name: "Cleaning", icon: "🧹", tag: "cleaning" },
+                { id: 4, name: "Plumber", icon: "🔧", tag: "plumber" },
+                { id: 5, name: "Electrician", icon: "💡", tag: "electrician" },
+                { id: 6, name: "Pest Control", icon: "🐜", tag: "pest_control" }
+            ];
+
+            const renderContent = () => {
+                switch (view) {
+                    case 'auth':
+                        return <AuthPage onGoBack={() => setView('home')} />;
+                    case 'plumber':
+                        return <PlumberPage onGoBack={() => setView('home')} addToCart={addToCart} />;
+                    case 'home':
+                    default:
+                        return (
+                            <main>
+                                <header className="hero">
+                                    <h1>Home services, on demand.</h1>
+                                    <div className="search-box">
+                                        <input type="text" placeholder="Search for services..." />
+                                        <button>Search</button>
+                                    </div>
+                                </header>
+                                <section className="container">
+                                    <h2>What are you looking for?</h2>
+                                    <div className="services-grid">
+                                        {services.map(s => (
+                                            <div key={s.id} className="card" onClick={() => handleServiceClick(s.tag)}>
+                                                <div style={{fontSize: '40px'}}>{s.icon}</div>
+                                                <div style={{fontWeight: 'bold', marginTop: '10px'}}>{s.name}</div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </section>
+                            </main>
+                        );
+                }
+            };
+
+            return (
+                <div>
+                    <nav className="navbar">
+                        <div className="logo" onClick={() => setView('home')}>Home</div>
+                        <ul className="nav-links">
+                            <li onClick={() => setView('home')}>Home</li>
+                            <li onClick={() => setView('auth')}>Login / Sign Up</li>
+                            <li>
+                                <button id="theme-toggle" onClick={toggleTheme}>
+                                    {theme === 'light' ? '🌙' : '☀️'}
+                                </button>
+                            </li>
+                        </ul>
+                    </nav>
+
+                    {renderContent()}
+
+                    <footer>
+                        <p>© 2024 Home Clone</p>
+                    </footer>
+                </div>
+            );
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    {% endraw %}
+    </script>
+</body>
+</html>
